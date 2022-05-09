@@ -63,9 +63,11 @@ TRAIN:
   iters: 281
 
   LOSS:
-    losses: {'cosface': 1.}
+    losses: {'cosface': 1., 'moco': 1.}
     margin: 0.25
     gamma: 32
+    queue_size: 8192
+    feature_dim: 768
 
   # validate
   val_dataset: 'market1501'

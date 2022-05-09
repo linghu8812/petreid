@@ -56,7 +56,7 @@ def extract():
     batch_size = 128
     args, cfg = parge_config()
     reid_model = build_model(
-        cfg, 0, './logs/swin_tiny_cosface/model_best.pth'
+        cfg, 0, './logs/swin_tiny_moco/model_best.pth'
     )  # use num_classes=0 since we do not need classifier for testing
     reid_model.cuda()
     test_dataset = TestData('../data/pet_biometric_challenge_2022/validation/images',

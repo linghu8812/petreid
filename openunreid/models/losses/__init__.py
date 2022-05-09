@@ -8,6 +8,7 @@ from .triplet import SoftmaxTripletLoss, SoftSoftmaxTripletLoss, TripletLoss
 from .gan_loss import GANLoss
 from .sia_loss import SiaLoss
 from .circle_loss import CosFace
+from .moco import Memory
 
 
 def build_loss(
@@ -60,6 +61,9 @@ def build_loss(
 
         elif loss_name == "cosface":
             criterion = CosFace(cfg.margin, cfg.gamma)
+
+        elif loss_name == "moco":
+            criterion = Memory(cfg.feature_dim, cfg.queue_size)
 
         elif (loss_name.startswith('gan')):
             criterion = GANLoss('lsgan')
