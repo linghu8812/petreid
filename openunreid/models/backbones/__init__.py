@@ -3,6 +3,7 @@ from .resnet_ibn_a import resnet50_ibn_a, resnet101_ibn_a
 from .generator import *
 from .discriminator import *
 from .spgan import *
+from .swin_transformer import swin_tiny_patch4_window7_224, swin_base_patch4_window7_224
 
 __all__ = ["build_bakcbone", "names"]
 
@@ -17,7 +18,9 @@ __factory = {
     "resnet_6blocks": resnet_6blocks,
     "resnet_9blocks": resnet_9blocks,
     "patchgan_3layers": patchgan_3layers,
-    "metricnet": metricnet
+    "metricnet": metricnet,
+    "swin_tiny_patch4_window7_224": swin_tiny_patch4_window7_224,
+    "swin_base_patch4_window7_224": swin_base_patch4_window7_224
 }
 
 
