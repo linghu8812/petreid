@@ -17,7 +17,7 @@ except:
 
 from ..core.label_generators import LabelGenerator
 from ..core.metrics.accuracy import accuracy
-from ..data import build_train_dataloader, build_val_dataloader
+from ..data import build_train_dataloader, build_test_dataloader
 from ..data.utils.data_utils import save_image
 from ..utils import bcolors
 from ..utils.dist_utils import get_dist_info, synchronize
@@ -26,7 +26,7 @@ from ..utils.image_pool import ImagePool
 from ..utils.torch_utils import copy_state_dict, load_checkpoint, save_checkpoint
 from ..utils.file_utils import mkdir_if_missing
 from ..utils.torch_utils import tensor2im
-from .test import val_reid
+from ..apis.test import test_reid
 from .train import batch_processor, set_random_seed
 
 
@@ -53,7 +53,7 @@ class BaseRunner(object):
         # set_random_seed(cfg.TRAIN.seed, cfg.TRAIN.deterministic)
 
         if meter_formats is None:
-            meter_formats = {"Time": ":.3f", "Acc@1": ":.2%"}
+            meter_formats = {"Time": ":.3f", "Acc@1": ":.2%", "lr": ":f"}
 
         self.cfg = cfg
         self.model = model
@@ -79,7 +79,7 @@ class BaseRunner(object):
         # build data loaders
         self.train_loader, self.train_sets = train_loader, train_sets
         if "val_dataset" in self.cfg.TRAIN:
-            self.val_loader, self.val_set = build_val_dataloader(cfg)
+            self.val_loader, self.queries, self.galleries = build_test_dataloader(cfg)
 
         # save training variables
         for key in criterions.keys():
@@ -239,6 +239,7 @@ class BaseRunner(object):
                 self.scaler.update()
 
             self.train_progress.update({"Time": time.time() - end})
+            self.train_progress.update({"lr": self.optimizer.param_groups[0]['lr']})
             end = time.time()
 
             if iter % self.print_freq == 0:
@@ -291,16 +292,9 @@ class BaseRunner(object):
         for idx in range(len(model_list)):
             if len(model_list) > 1:
                 print("==> Val on the no.{} model".format(idx))
-            cmc, mAP = val_reid(
-                self.cfg,
-                model_list[idx],
-                self.val_loader[0],
-                self.val_set[0],
-                self._epoch,
-                self.cfg.TRAIN.val_dataset,
-                self._rank,
-                print_freq=self.print_freq,
-            )
+            cmc, mAP = test_reid(
+                    self.cfg, model_list[idx], self.val_loader[0], self.queries[0], self.galleries[0],
+                    dataset_name=self.cfg.TEST.datasets[0])
             better_mAP = max(better_mAP, mAP)
 
         return better_mAP

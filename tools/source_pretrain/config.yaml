@@ -4,7 +4,7 @@ LOGS_ROOT: '../logs/'
 
 MODEL:
   # architecture
-  backbone: 'resnet50'
+  backbone: 'swin_tiny_patch4_window7_224'
   pooling: 'gem'
   embed_feat: 0
   dropout: 0.
@@ -23,8 +23,8 @@ MODEL:
 
 DATA:
 
-  height: 256
-  width: 128
+  height: 224
+  width: 224
   norm_mean: [0.485, 0.456, 0.406]
   norm_std: [0.229, 0.224, 0.225]
 
@@ -50,49 +50,48 @@ DATA:
 
 
 TRAIN:
-  seed: 1
+  seed: 2022
   deterministic: True
   # mixed precision training for PyTorch>=1.6
-  amp: False
+  amp: True
 
   # datasets
   datasets: {'market1501': 'trainval',}
   unsup_dataset_indexes: null
 
-  epochs: 120
-  iters: 200
+  epochs: 22
+  iters: 281
 
   LOSS:
-    losses: {'cross_entropy': 1., 'softmax_triplet': 1.}
-    margin: 0.
+    losses: {'cosface': 1.}
+    margin: 0.25
+    gamma: 32
 
   # validate
   val_dataset: 'market1501'
-  val_freq: 40
+  val_freq: 1
 
   # sampler
   SAMPLER:
-    num_instances: 4
+    num_instances: 2
     is_shuffle: True
 
   # data loader
   LOADER:
-    samples_per_gpu: 16
-    workers_per_gpu: 2
+    samples_per_gpu: 64
+    workers_per_gpu: 8
 
   # optim
   OPTIM:
     optim: 'adam'
-    lr: 0.00035
+    lr: 0.00004
     weight_decay: 0.0005
 
   SCHEDULER:
-    lr_scheduler: 'warmup_multi_step'
-    stepsize: [40, 70]
-    gamma: 0.1
+    lr_scheduler: 'cosine'
+    max_epoch: 22
     warmup_factor: 0.01
     warmup_steps: 10
-
 
 TEST:
 
@@ -101,7 +100,7 @@ TEST:
 
   # data loader
   LOADER:
-    samples_per_gpu: 32
+    samples_per_gpu: 128
     workers_per_gpu: 4
 
   # ranking setting

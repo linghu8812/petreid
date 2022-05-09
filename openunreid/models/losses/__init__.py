@@ -7,6 +7,7 @@ from .memory import HybridMemory
 from .triplet import SoftmaxTripletLoss, SoftSoftmaxTripletLoss, TripletLoss
 from .gan_loss import GANLoss
 from .sia_loss import SiaLoss
+from .circle_loss import CosFace
 
 
 def build_loss(
@@ -56,6 +57,9 @@ def build_loss(
             criterion = HybridMemory(
                 num_features, num_memory, temp=cfg.temp, momentum=cfg.momentum
             )
+
+        elif loss_name == "cosface":
+            criterion = CosFace(cfg.margin, cfg.gamma)
 
         elif (loss_name.startswith('gan')):
             criterion = GANLoss('lsgan')

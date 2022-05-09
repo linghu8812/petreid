@@ -30,6 +30,7 @@ wheels/
 .installed.cfg
 *.egg
 MANIFEST
+datasets/
 
 # PyInstaller
 #  Usually these files are written by a python script from a template
@@ -68,6 +69,7 @@ instance/
 
 # Scrapy stuff:
 .scrapy
+result*.csv
 
 # Sphinx documentation
 docs/_build/

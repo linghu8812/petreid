@@ -106,7 +106,7 @@ class Market1501(ImageDataset):
             if (pid not in pid_container) or (pid == -1):
                 continue
 
-            assert 0 <= pid <= 1501  # pid == 0 means background
+            assert 0 <= pid <= 10000  # pid == 0 means background
             assert 1 <= camid <= 6
             camid -= 1  # index starts from 0
 
