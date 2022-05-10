@@ -26,13 +26,18 @@ def build_train_dataloader(
 
     data_root = cfg.DATA_ROOT  # PATH, str
 
-    dataset_names = list(cfg.TRAIN.datasets.keys())  # list of str
-    dataset_modes = list(cfg.TRAIN.datasets.values())  # list of str
-    for mode in dataset_modes:
-        assert mode in [
-            "train",
-            "trainval",
-        ], "subset for training should be selected in [train, trainval]"
+    dataset_names = []  # list of str
+    dataset_modes = []  # list of str
+    for name in cfg.TRAIN.datasets.keys():
+        modes = cfg.TRAIN.datasets[name]
+        for mode in modes:
+            assert mode in [
+                "train",
+                "trainval",
+                "unseen",
+            ], "subset for training should be selected in [train, trainval, unseen]"
+            dataset_names.append(name)
+            dataset_modes.append(mode)
     unsup_dataset_indexes = cfg.TRAIN.unsup_dataset_indexes  # list or None
 
     if datasets is None:
@@ -166,10 +171,16 @@ def build_val_dataloader(
     rank, world_size, dist = get_dist_info()
 
     data_root = cfg.DATA_ROOT  # PATH, str
-    dataset_names = list(cfg.TRAIN.datasets.keys())  # list of str
+    dataset_names = []  # list of str
+    dataset_modes = []
+    for name in cfg.TRAIN.datasets.keys():
+        modes = cfg.TRAIN.datasets[name]
+        for mode in modes:
+            dataset_names.append(name)
+            dataset_modes.append(mode)
 
     if for_clustering:
-        dataset_modes = list(cfg.TRAIN.datasets.values())  # list of str
+        # dataset_modes = list(cfg.TRAIN.datasets.values())  # list of str
         if all_datasets:
             unsup_dataset_indexes = list(np.arange(len(dataset_names)))
         else:

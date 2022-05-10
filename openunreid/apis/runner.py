@@ -119,6 +119,7 @@ class BaseRunner(object):
                     synchronize()
 
             # train
+            torch.cuda.empty_cache()
             self.train()
             synchronize()
 

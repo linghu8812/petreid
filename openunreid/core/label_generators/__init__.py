@@ -161,8 +161,13 @@ class LabelGenerator(object):
         self.cfg.TRAIN.PSEUDO_LABELS.cluster_num = self.num_classes
 
         if self.verbose:
+            dataset_names = []  # list of str
+            for name in self.cfg.TRAIN.datasets.keys():
+                modes = self.cfg.TRAIN.datasets[name]
+                for mode in modes:
+                    dataset_names.append(name)
             dataset_names = [
-                list(self.cfg.TRAIN.datasets.keys())[i]
+                dataset_names[i]
                 for i in self.cfg.TRAIN.unsup_dataset_indexes
             ]
             for label, dn in zip(all_labels, dataset_names):

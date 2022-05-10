@@ -4,34 +4,34 @@ LOGS_ROOT: '../logs/'
 
 MODEL:
   # architecture
-  backbone: 'resnet50'
+  backbone: 'swin_base_patch4_window7_224'
   pooling: 'gem'
   embed_feat: 0
   dropout: 0.
 
-  dsbn: True
+  dsbn: False
 
   sync_bn: True
-  samples_per_bn: 16
+  samples_per_bn: 32
 
   mean_net: False
   alpha: 0.999
 
   # pretraining
   imagenet_pretrained: True
-  source_pretrained: null
+  source_pretrained: '/home/linghu8812/deeplearning/pet_biometric/OpenUnReID/tools/logs/swin_base_moco_flip/model_best.pth'
 
 
 DATA:
 
-  height: 256
-  width: 128
+  height: 224
+  width: 224
   norm_mean: [0.485, 0.456, 0.406]
   norm_std: [0.229, 0.224, 0.225]
 
   TRAIN:
     # augmentation
-    is_autoaug: False
+    is_autoaug: True
 
     is_flip: True
     flip_prob: 0.5
@@ -42,7 +42,7 @@ DATA:
     is_blur: False
     blur_prob: 0.5
 
-    is_erase: True
+    is_erase: False
     erase_prob: 0.5
 
     # dual augmentation for MMT
@@ -51,37 +51,40 @@ DATA:
 
 
 TRAIN:
-  seed: 1
+  seed: 2022
   deterministic: True
   # mixed precision training for PyTorch>=1.6
-  amp: False
+  amp: True
 
   # datasets
-  datasets: {'market1501': 'trainval',}
-  # datasets: {'market1501': 'trainval', 'dukemtmcreid': 'trainval'}
-  unsup_dataset_indexes: [0,]
+  datasets: {'market1501': ['trainval', 'unseen']}
+  unsup_dataset_indexes: [1,]
 
-  epochs: 50
-  iters: 400
+  epochs: 3
+  iters: 1124
 
   LOSS:
-    losses: {'hybrid_memory': 1.,}
+    losses: {'hybrid_memory': 1., 'cosface': 1.}
+    margin: 0.25
+    gamma: 32
+    queue_size: 8192
+    feature_dim: 1024
     temp: 0.05
     momentum: 0.2
 
   # validate
   val_dataset: 'market1501'
-  val_freq: 5
+  val_freq: 1
 
   # sampler
   SAMPLER:
-    num_instances: 4
+    num_instances: 2
     is_shuffle: True
 
   # data loader
   LOADER:
     samples_per_gpu: 16
-    workers_per_gpu: 2
+    workers_per_gpu: 8
 
   # pseudo labels
   PSEUDO_LABELS:
@@ -91,8 +94,8 @@ TRAIN:
     norm_center: True
 
     cluster: 'dbscan'
-    eps: [0.58, 0.6, 0.62]
-    min_samples: 4 # for dbscan
+    eps: [0.4, 0.5, 0.6]
+    min_samples: 1 # for dbscan
     dist_metric: 'jaccard'
     k1: 30 # for jaccard distance
     k2: 6 # for jaccard distance
@@ -106,12 +109,12 @@ TRAIN:
   # optim
   OPTIM:
     optim: 'adam'
-    lr: 0.00035
+    lr: 0.000004
     weight_decay: 0.0005
 
   SCHEDULER:
     lr_scheduler: 'single_step'
-    stepsize: 20
+    stepsize: 2
     gamma: 0.1
 
 
@@ -122,8 +125,8 @@ TEST:
 
   # data loader
   LOADER:
-    samples_per_gpu: 32
-    workers_per_gpu: 2
+    samples_per_gpu: 64
+    workers_per_gpu: 8
 
   # ranking setting
   dist_metric: 'euclidean'

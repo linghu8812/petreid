@@ -56,9 +56,10 @@ def extract():
     batch_size = 128
     args, cfg = parge_config()
     reid_model = build_model(
-        cfg, 0, './logs/swin_base_moco/model_best.pth'
+        cfg, 0, './logs/swin_base_pseodu/model_best.pth'
     )  # use num_classes=0 since we do not need classifier for testing
     reid_model.cuda()
+    reid_model.eval()
     test_dataset = TestData('../data/pet_biometric_challenge_2022/validation/images',
                             '../data/pet_biometric_challenge_2022/validation/valid_data.csv',
                             test_transform, 'validation_bad_list.txt')
@@ -69,8 +70,8 @@ def extract():
             f.write(f'imageA,imageB,prediction\n')
             features_1, features_2, names_1, names_2 = [], [], [], []
             for images1, images2, names1, names2 in tqdm(test_loader):
-                features1 = F.normalize(reid_model(images1.cuda())['feat'])
-                features2 = F.normalize(reid_model(images2.cuda())['feat'])
+                features1 = F.normalize(reid_model(images1.cuda()))
+                features2 = F.normalize(reid_model(images2.cuda()))
                 features_1.append(features1.cpu())
                 features_2.append(features2.cpu())
                 names_1.extend(list(names1))

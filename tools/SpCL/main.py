@@ -50,6 +50,7 @@ class SpCLRunner(BaseRunner):
                 start_ind += dataset.num_pids
 
         # generate pseudo labels
+        torch.cuda.empty_cache()
         pseudo_labels, label_centers = self.label_generator(
             self._epoch, memory_features=memory_features, print_freq=self.print_freq
         )
@@ -250,7 +251,7 @@ def main():
         train_loader,
         train_sets=train_sets,
         lr_scheduler=lr_scheduler,
-        meter_formats={"Time": ":.3f",},
+        meter_formats={"Time": ":.3f", "lr": ":f"},
         reset_optim=False,
     )
 

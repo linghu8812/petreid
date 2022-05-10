@@ -103,7 +103,7 @@ TEST:
   # data loader
   LOADER:
     samples_per_gpu: 64
-    workers_per_gpu: 4
+    workers_per_gpu: 8
 
   # ranking setting
   dist_metric: 'euclidean'

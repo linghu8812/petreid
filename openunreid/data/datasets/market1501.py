@@ -64,13 +64,14 @@ class Market1501(ImageDataset):
                 [0.0, 1.0],
                 False,
             ),
+            "unseen": (osp.join(self.dataset_dir, "unseen"), [0.0, 1.0], False)
         }
         try:
             cfgs = subsets_cfgs[mode]
         except KeyError:
             raise ValueError(
                 "Invalid mode. Got {}, but expected to be "
-                "one of [train | val | trainval | query | gallery]".format(self.mode)
+                "one of [train | val | trainval | query | gallery | unseen]".format(self.mode)
             )
 
         required_files = [self.dataset_dir, cfgs[0]]
@@ -86,9 +87,12 @@ class Market1501(ImageDataset):
         # get all identities
         pid_container = set()
         for img_path in img_paths:
-            pid, _ = map(int, pattern.search(img_path).groups())
-            if pid == -1:
-                continue  # junk images are just ignored
+            if 'unseen' not in dir_path:
+                pid, _ = map(int, pattern.search(img_path).groups())
+                if pid == -1:
+                    continue  # junk images are just ignored
+            else:
+                pid = 1
             pid_container.add(pid)
         pid_container = sorted(pid_container)
 
@@ -102,9 +106,12 @@ class Market1501(ImageDataset):
 
         data = []
         for img_path in img_paths:
-            pid, camid = map(int, pattern.search(img_path).groups())
-            if (pid not in pid_container) or (pid == -1):
-                continue
+            if 'unseen' not in dir_path:
+                pid, camid = map(int, pattern.search(img_path).groups())
+                if (pid not in pid_container) or (pid == -1):
+                    continue
+            else:
+                pid, camid = 0, 1
 
             assert 0 <= pid <= 10000  # pid == 0 means background
             assert 1 <= camid <= 6
