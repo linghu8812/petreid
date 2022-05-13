@@ -302,7 +302,7 @@ class BaseRunner(object):
 
     def save(self, mAP=None):
         if mAP is not None:
-            is_best = mAP > self._best_mAP
+            is_best = mAP >= self._best_mAP
             self._best_mAP = max(self._best_mAP, mAP)
             print(
                 bcolors.OKGREEN

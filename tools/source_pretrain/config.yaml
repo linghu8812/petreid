@@ -56,11 +56,11 @@ TRAIN:
   amp: True
 
   # datasets
-  datasets: {'market1501': 'trainval',}
+  datasets: {'market1501': ['trainval']}
   unsup_dataset_indexes: null
 
   epochs: 22
-  iters: 562
+  iters: 625
 
   LOSS:
     losses: {'cosface': 1., 'moco': 1.}
