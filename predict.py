@@ -56,7 +56,7 @@ def extract():
     batch_size = 128
     args, cfg = parge_config()
     reid_model = build_model(
-        cfg, 0, './logs/swin_base_moco_all/model_best.pth'
+        cfg, 0, './logs/swin_base_moco_noflip_all/model_best.pth'
     )  # use num_classes=0 since we do not need classifier for testing
     reid_model.cuda()
     reid_model.eval()
