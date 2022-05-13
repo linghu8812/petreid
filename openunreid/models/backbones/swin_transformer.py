@@ -47,7 +47,7 @@ def swin_large_patch4_window7_224_in22k(pretrained=False):
         ResNet: a :class:`ResNet` instance.
     """
 
-    model = SwinTransformer('swin_base_patch4_window7_224', pretrained=pretrained)
+    model = SwinTransformer('swin_large_patch4_window7_224_in22k', pretrained=pretrained)
     model.num_features = 1536
     return model
 
@@ -59,6 +59,6 @@ def swin_base_patch4_window12_384_in22k(pretrained=False):
         ResNet: a :class:`ResNet` instance.
     """
 
-    model = SwinTransformer('swin_base_patch4_window7_224', pretrained=pretrained)
+    model = SwinTransformer('swin_base_patch4_window12_384_in22k', pretrained=pretrained)
     model.num_features = 1024
     return model
