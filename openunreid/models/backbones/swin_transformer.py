@@ -12,7 +12,14 @@ class SwinTransformer(nn.Module):
         self.num_features = 768
 
     def forward(self, x):
-        x = self.model.forward_features(x).unsqueeze(2).unsqueeze(2)
+        x = self.model.patch_embed(x)
+        if self.model.absolute_pos_embed is not None:
+            x = x + self.model.absolute_pos_embed
+        x = self.model.pos_drop(x)
+        x = self.model.layers(x)
+        x = self.model.norm(x)  # B L C
+        x = x.transpose(1, 2)  # B C 1
+        # x = self.model.forward_features(x).unsqueeze(2).unsqueeze(2)
         return x
 
 
