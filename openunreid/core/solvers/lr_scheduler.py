@@ -7,7 +7,7 @@ from typing import List
 import torch
 from torch.optim.lr_scheduler import _LRScheduler
 
-AVAI_SCH = ["single_step", "multi_step", "warmup_multi_step", "cosine", "linear"]
+AVAI_SCH = ["single_step", "multi_step", "warmup_multi_step", "cosine", "linear", "cycliclr"]
 
 
 def build_lr_scheduler(
@@ -20,6 +20,10 @@ def build_lr_scheduler(
     max_epoch=1,
     n_epochs_init=50,
     n_epochs_decay=50,
+    max_lr=0.00004,
+    base_lr=0.00000005,
+    step_size_up=4,
+    step_size_down=16,
 
 ):
     """A function wrapper for building a learning rate scheduler.
@@ -92,6 +96,12 @@ def build_lr_scheduler(
     elif lr_scheduler == "cosine":
         scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(
             optimizer, float(max_epoch)
+        )
+
+    elif lr_scheduler == "cycliclr":
+        scheduler = torch.optim.lr_scheduler.CyclicLR(
+            optimizer, base_lr=base_lr, max_lr=max_lr, step_size_up=step_size_up, step_size_down=step_size_down,
+            cycle_momentum=False
         )
 
     elif lr_scheduler == "linear":

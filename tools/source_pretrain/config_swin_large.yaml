@@ -38,7 +38,7 @@ DATA:
     is_pad: True
     pad_size: 10
 
-    is_blur: False
+    is_blur: True
     blur_prob: 0.5
 
     is_erase: False
