@@ -32,7 +32,7 @@ DATA:
     # augmentation
     is_autoaug: True
 
-    is_flip: False
+    is_flip: True
     flip_prob: 0.5
 
     is_pad: True
