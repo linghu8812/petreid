@@ -5,6 +5,7 @@ from .discriminator import *
 from .spgan import *
 from .swin_transformer import swin_tiny_patch4_window7_224, swin_base_patch4_window7_224, \
     swin_large_patch4_window7_224_in22k, swin_base_patch4_window12_384_in22k
+from .efficientnet import efficientnetb4, efficientnetb7
 
 __all__ = ["build_bakcbone", "names"]
 
@@ -23,7 +24,9 @@ __factory = {
     "swin_tiny_patch4_window7_224": swin_tiny_patch4_window7_224,
     "swin_base_patch4_window7_224": swin_base_patch4_window7_224,
     "swin_large_patch4_window7_224_in22k": swin_large_patch4_window7_224_in22k,
-    "swin_base_patch4_window12_384_in22k": swin_base_patch4_window12_384_in22k
+    "swin_base_patch4_window12_384_in22k": swin_base_patch4_window12_384_in22k,
+    "efficientnetb4": efficientnetb4,
+    "efficientnetb7": efficientnetb7,
 }
 
 
