@@ -1,3 +1,7 @@
+"""
+--resume ./logs/resnet_101_pseudo_2/checkpoint.pth ./logs/swin_large_pseudo_2/checkpoint.pth
+--config ./logs/resnet_101_pseudo_2/config.yaml ./logs/swin_large_pseudo_2/config.yaml
+"""
 import argparse
 from pathlib import Path
 import torch
