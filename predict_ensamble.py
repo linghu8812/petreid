@@ -1,6 +1,6 @@
 """
---resume ./logs/resnet_101_pseudo_2/checkpoint.pth ./logs/swin_large_pseudo_2/checkpoint.pth
---config ./logs/resnet_101_pseudo_2/config.yaml ./logs/swin_large_pseudo_2/config.yaml
+--resume ./logs/swin_base_pseudo_50_epochs/model_best.pth ./logs/swin_large_pseudo_50_epochs/model_best.pth
+--config ./logs/swin_base_pseudo_50_epochs/config.yaml ./logs/swin_large_pseudo_50_epochs/config.yaml
 """
 import argparse
 from pathlib import Path
@@ -59,14 +59,18 @@ def compute_dist(model_config, features1, features2):
     return results_dist
 
 
-def compute_result(model, test_loader, model_config):
+def compute_result(model, test_loader, model_config, flip=False):
     features_1, features_2, names_1, names_2 = model_inference(model, test_loader)
-    features_1_f, features_2_f, _, _ = model_inference(model, test_loader, True)
+    if flip:
+        features_1_f, features_2_f, _, _ = model_inference(model, test_loader, True)
     dist_1 = compute_dist(model_config, features_1, features_2)
-    dist_2 = compute_dist(model_config, features_1_f, features_2)
-    dist_3 = compute_dist(model_config, features_1, features_2_f)
-    dist_4 = compute_dist(model_config, features_1_f, features_2_f)
-    results_dist = (dist_1 + dist_2 + dist_3 + dist_4) / 4
+    if flip:
+        dist_2 = compute_dist(model_config, features_1_f, features_2)
+        dist_3 = compute_dist(model_config, features_1, features_2_f)
+        dist_4 = compute_dist(model_config, features_1_f, features_2_f)
+        results_dist = (dist_1 + dist_2 + dist_3 + dist_4) / 4
+    else:
+        results_dist = dist_1
     return results_dist, names_1, names_2
 
 
@@ -91,7 +95,7 @@ def extract():
                                         '../data/pet_biometric_challenge_2022/validation/valid_data.csv',
                                         test_transform, 'validation_bad_list.txt')
                 test_loader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False, num_workers=8)
-                model_reuslt, names_1, names_2 = compute_result(model, test_loader, config)
+                model_reuslt, names_1, names_2 = compute_result(model, test_loader, config, flip=True)
                 results_dist = results_dist + model_reuslt
 
             results_dist /= len(model_list)
