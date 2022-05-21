@@ -24,17 +24,18 @@ test_transform = transforms.Compose([
 
 
 class TestData(Dataset):
-    def __init__(self, data_path, csv_file, transform, bad_file):
+    def __init__(self, data_path, csv_file, transform, bad_file=None):
         self.data_path = data_path
         self.dataset = pd.read_csv(csv_file).values
         self.transform = transform
 
-        with open(bad_file, 'r') as f:
-            data = f.readlines()
         self.bad_data_list = {}
-        for line in data:
-            name, class_id = line.strip().split(' ')
-            self.bad_data_list[name] = int(class_id)
+        if bad_file is not None:
+            with open(bad_file, 'r') as f:
+                data = f.readlines()
+            for line in data:
+                name, class_id = line.strip().split(' ')
+                self.bad_data_list[name] = int(class_id)
 
     def __getitem__(self, item):
         image_name1, image_name2 = self.dataset[item][0], self.dataset[item][1]
