@@ -3,8 +3,8 @@
 --resume ./logs/resnet101_256/checkpoint.pth ./logs/swin_base_gemm_flip_blur/checkpoint.pth ./logs/swin_large_gemm_flip_blur/checkpoint.pth
 --config ./logs/resnet101_256/config.yaml ./logs/swin_base_gemm_flip_blur/config.yaml ./logs/swin_large_gemm_flip_blur/config.yaml
 #pseudo command line
---resume ./logs/swin_base_pseudo_85/model_best.pth ./logs/swin_large_pseudo_85/model_best.pth
---config ./logs/swin_base_pseudo_85/config.yaml ./logs/swin_large_pseudo_85/config.yaml
+--resume ./logs/resnet_pseudo_85/model_best.pth ./logs/swin_base_pseudo_85/model_best.pth ./logs/swin_large_pseudo_85/model_best.pth
+--config ./logs/resnet_pseudo_85/config.yaml ./logs/swin_base_pseudo_85/config.yaml ./logs/swin_large_pseudo_85/config.yaml
 """
 import argparse
 from pathlib import Path
@@ -104,7 +104,7 @@ def extract():
 
             results_dist /= len(model_list)
             for image_name1, image_name2, result in zip(names_1, names_2, results_dist):
-                f.write(f'{image_name1},{image_name2},{1 - result}\n')
+                f.write(f'{image_name1},{image_name2},{result}\n')
 
     print('Extraction Done')
 
