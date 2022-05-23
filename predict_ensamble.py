@@ -1,6 +1,10 @@
 """
---resume ./logs/swin_base_pseudo_50_epochs/model_best.pth ./logs/swin_large_pseudo_50_epochs/model_best.pth
---config ./logs/swin_base_pseudo_50_epochs/config.yaml ./logs/swin_large_pseudo_50_epochs/config.yaml
+#source command line
+--resume ./logs/resnet101_256/checkpoint.pth ./logs/swin_base_gemm_flip_blur/checkpoint.pth ./logs/swin_large_gemm_flip_blur/checkpoint.pth
+--config ./logs/resnet101_256/config.yaml ./logs/swin_base_gemm_flip_blur/config.yaml ./logs/swin_large_gemm_flip_blur/config.yaml
+#pseudo command line
+--resume ./logs/swin_base_pseudo_85/model_best.pth ./logs/swin_large_pseudo_85/model_best.pth
+--config ./logs/swin_base_pseudo_85/config.yaml ./logs/swin_large_pseudo_85/config.yaml
 """
 import argparse
 from pathlib import Path
@@ -53,10 +57,10 @@ def model_inference(model, test_loader, flip=False):
 
 
 def compute_dist(model_config, features1, features2):
-    similarities = torch.mm(torch.cat(features1), torch.cat(features2).t())
-    jaccard_dist = 1 - build_dist(model_config['TEST'], torch.cat(features1), torch.cat(features2), dist_m="jaccard")
-    results_dist = np.diagonal(0.7 * similarities + 0.3 * jaccard_dist)
-    return results_dist
+    similarities = np.diagonal(torch.mm(torch.cat(features1), torch.cat(features2).t()))
+    # jaccard_dist = 1 - build_dist(model_config['TEST'], torch.cat(features1), torch.cat(features2), dist_m="jaccard")
+    # results_dist = np.diagonal(0.7 * similarities + 0.3 * jaccard_dist)
+    return similarities
 
 
 def compute_result(model, test_loader, model_config, flip=False):
@@ -100,7 +104,7 @@ def extract():
 
             results_dist /= len(model_list)
             for image_name1, image_name2, result in zip(names_1, names_2, results_dist):
-                f.write(f'{image_name1},{image_name2},{result}\n')
+                f.write(f'{image_name1},{image_name2},{1 - result}\n')
 
     print('Extraction Done')
 

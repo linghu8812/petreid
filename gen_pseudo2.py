@@ -57,7 +57,7 @@ df_select_half.to_csv('pseudo_list_hungary.csv', index=False)
 # %%
 df_select_half.describe()
 # %%
-pos_threshold = df_select_half.describe().loc['25%', 'prediction']
+pos_threshold = np.percentile(df_select_half['prediction'].values, 15)
 # %%
 df_select_half_pos = df_select_half.loc[df_select_half['prediction'] > pos_threshold]
 # %%

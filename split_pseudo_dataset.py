@@ -8,7 +8,7 @@ from tqdm import tqdm
 data_path = '../data/pet_biometric_challenge_2022/train/images'
 csv_file = '../data/pet_biometric_challenge_2022/train/train_data.csv'
 p_data_path = '../data/pet_biometric_challenge_2022/validation/images'
-p_csv_file = 'pseudo_label.csv'
+p_csv_file = 'pseudo_list_hungary.csv'
 final_path = './datasets/market1501/Market-1501-v15.09.15'
 train_path = 'bounding_box_train'
 query_path = 'query'

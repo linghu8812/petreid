@@ -59,8 +59,8 @@ TRAIN:
   datasets: {'market1501': ['trainval']}
   unsup_dataset_indexes: null
 
-  epochs: 50
-  iters: 1354
+  epochs: 22
+  iters: 1368
 
   LOSS:
     losses: {'cosface': 1., 'moco': 1.}
