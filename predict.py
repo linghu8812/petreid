@@ -14,7 +14,7 @@ from openunreid.utils.config import (
 )
 from openunreid.core.utils.compute_dist import build_dist
 
-from dataset import TestData, test_transform
+from dataset import TestData, build_transform
 
 
 def parge_config():
@@ -60,6 +60,7 @@ def extract():
     )  # use num_classes=0 since we do not need classifier for testing
     reid_model.cuda()
     reid_model.eval()
+    test_transform = build_transform(cfg.DATA['height'])
     test_dataset = TestData('../data/pet_biometric_challenge_2022/validation/images',
                             '../data/pet_biometric_challenge_2022/validation/valid_data.csv',
                             test_transform, 'validation_bad_list.txt')
