@@ -97,8 +97,8 @@ def label_data():
     predictions = []
     for i, (imageA_index, imageB_index) in enumerate(zip(matches[0], matches[1])):
         if matrix_dist[imageA_index, imageB_index] < 1:
-            imageAs.append(names[imageA_index])
-            imageBs.append(names[imageB_index])
+            imageAs.append(imageA_index)
+            imageBs.append(imageB_index)
             predictions.append(matrix_dist[imageA_index, imageB_index].item())
 
     thresh = np.percentile(predictions, 85)
@@ -109,10 +109,27 @@ def label_data():
     step = 0
     for match in zip(imageAs, imageBs, predictions):
         if match[2] < thresh:
-            if match[0] not in test_labels and match[1] not in test_labels:
-                test_labels[match[0]] = start_index + step
-                test_labels[match[1]] = start_index + step
+            if names[match[0]] not in test_labels and names[match[1]] not in test_labels:
+                test_labels[names[match[0]]] = start_index + step
+                test_labels[names[match[1]]] = start_index + step
+                indexes1 = np.where(matrix_dist[match[0]] < 0.5)[0]
+                indexes2 = np.where(matrix_dist[match[1]] < 0.5)[0]
+                for index in np.concatenate([indexes1, indexes2]):
+                    if names[index] not in test_labels:
+                        test_labels[names[index]] = start_index + step
                 step += 1
+            elif names[match[0]] in test_labels:
+                test_labels[names[match[1]]] = test_labels[names[match[0]]]
+                indexes = np.where(matrix_dist[match[1]] < 0.5)[0]
+                for index in indexes:
+                    if names[index] not in test_labels:
+                        test_labels[names[index]] = test_labels[names[match[0]]]
+            elif names[match[1]] in test_labels:
+                test_labels[names[match[0]]] = test_labels[names[match[1]]]
+                indexes = np.where(matrix_dist[match[0]] < 0.5)[0]
+                for index in indexes:
+                    if names[index] not in test_labels:
+                        test_labels[names[index]] = test_labels[names[match[1]]]
 
     with open('pseudo_label.csv', 'w') as f:
         f.write('dog ID, image_name\n')

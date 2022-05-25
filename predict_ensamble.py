@@ -3,8 +3,8 @@
 --resume ./logs/resnet101_256/checkpoint.pth ./logs/swin_base_gemm_flip_blur/checkpoint.pth ./logs/swin_large_gemm_flip_blur/checkpoint.pth
 --config ./logs/resnet101_256/config.yaml ./logs/swin_base_gemm_flip_blur/config.yaml ./logs/swin_large_gemm_flip_blur/config.yaml
 #pseudo command line
---resume ./logs/resnet_pseudo_matrix/checkpoint.pth ./logs/swin_base_pseudo_matrix/checkpoint.pth ./logs/swin_large_pseudo_matrix/checkpoint.pth
---config ./logs/resnet_pseudo_matrix/config.yaml ./logs/swin_base_pseudo_matrix/config.yaml ./logs/swin_large_pseudo_matrix/config.yaml
+--resume ./logs/resnet_pseudo_matrix_v2/checkpoint.pth ./logs/swin_base_pseudo_matrix_v2/checkpoint.pth ./logs/swin_large_pseudo_matrix_v2/checkpoint.pth
+--config ./logs/resnet_pseudo_matrix_v2/config.yaml ./logs/swin_base_pseudo_matrix_v2/config.yaml ./logs/swin_large_pseudo_matrix_v2/config.yaml
 """
 import argparse
 from pathlib import Path
