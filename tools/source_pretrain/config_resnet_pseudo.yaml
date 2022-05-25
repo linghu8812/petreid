@@ -60,7 +60,7 @@ TRAIN:
   unsup_dataset_indexes: null
 
   epochs: 22
-  iters: 684
+  iters: 682
 
   LOSS:
     losses: {'cosface': 1., 'moco': 1.}
