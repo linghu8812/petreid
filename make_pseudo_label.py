@@ -1,6 +1,6 @@
 """
---resume ./logs/resnet101_256/checkpoint.pth ./logs/swin_base_gemm_flip_blur/checkpoint.pth ./logs/swin_large_gemm_flip_blur/checkpoint.pth
---config ./logs/resnet101_256/config.yaml ./logs/swin_base_gemm_flip_blur/config.yaml ./logs/swin_large_gemm_flip_blur/config.yaml
+--resume ./logs/resnet_101_ema/checkpoint.pth ./logs/swin_base_ema/checkpoint.pth ./logs/swin_large_ema/checkpoint.pth
+--config ./logs/resnet_101_ema/config.yaml ./logs/swin_base_ema/config.yaml ./logs/swin_large_ema/config.yaml
 """
 import torch
 import torch.nn.functional as F
@@ -31,9 +31,9 @@ def model_inference(model, test_loader, flip=False):
 
 def compute_dist(model_config, features1, features2):
     similarities = torch.mm(features1, features2)
-    jaccard_dist = 1 - build_dist(model_config['TEST'], features1, features2.t(), dist_m="jaccard")
-    results_dist = 0.7 * similarities + 0.3 * jaccard_dist
-    return 1 - results_dist
+    # jaccard_dist = 1 - build_dist(model_config['TEST'], features1, features2.t(), dist_m="jaccard")
+    # results_dist = 0.7 * similarities + 0.3 * jaccard_dist
+    return 1 - similarities
 
 
 def compute_result(model, test_loader, model_config):
