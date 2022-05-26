@@ -14,6 +14,7 @@ try:
     amp_support = True
 except:
     amp_support = False
+from timm.utils import ModelEmaV2
 
 from ..core.label_generators import LabelGenerator
 from ..core.metrics.accuracy import accuracy
@@ -63,6 +64,7 @@ class BaseRunner(object):
         self.print_freq = print_freq
         self.reset_optim = reset_optim
         self.label_generator = label_generator
+        self.ema = ModelEmaV2(model, decay=0.99)
 
         self.is_pseudo = (
             "PSEUDO_LABELS" in self.cfg.TRAIN
@@ -239,6 +241,7 @@ class BaseRunner(object):
             if self.scaler is not None:
                 self.scaler.update()
 
+            self.ema.update(self.model)
             self.train_progress.update({"Time": time.time() - end})
             self.train_progress.update({"lr": self.optimizer.param_groups[0]['lr']})
             end = time.time()
@@ -284,10 +287,10 @@ class BaseRunner(object):
         return total_loss
 
     def val(self):
-        if not isinstance(self.model, list):
-            model_list = [self.model]
+        if not isinstance(self.ema.module, list):
+            model_list = [self.ema.module]
         else:
-            model_list = self.model
+            model_list = self.ema.module
 
         better_mAP = 0
         for idx in range(len(model_list)):
@@ -324,31 +327,31 @@ class BaseRunner(object):
             self.save_model(is_best, self.cfg.work_dir)
 
     def save_model(self, is_best, fpath):
-        if isinstance(self.model, list):
+        if isinstance(self.ema.module, list):
             state_dict = {}
             state_dict["epoch"] = self._epoch + 1
             state_dict["best_mAP"] = self._best_mAP
-            for idx, model in enumerate(self.model):
+            for idx, model in enumerate(self.ema.module):
                 state_dict["state_dict_" + str(idx + 1)] = model.state_dict()
             save_checkpoint(state_dict, is_best,
-                    fpath=osp.join(fpath, "checkpoint.pth"))
+                            fpath=osp.join(fpath, "checkpoint.pth"))
 
-        elif isinstance(self.model, dict):
+        elif isinstance(self.ema.module, dict):
             state_dict = {}
             state_dict["epoch"] = self._epoch + 1
             state_dict["best_mAP"] = self._best_mAP
-            for key in self.model.keys():
-                state_dict["state_dict"] = self.model[key].state_dict()
+            for key in self.ema.module.keys():
+                state_dict["state_dict"] = self.ema.module[key].state_dict()
                 save_checkpoint(state_dict, False,
-                        fpath=osp.join(fpath, "checkpoint_"+key+".pth"))
+                                fpath=osp.join(fpath, "checkpoint_"+key+".pth"))
 
-        elif isinstance(self.model, nn.Module):
+        elif isinstance(self.ema.module, nn.Module):
             state_dict = {}
             state_dict["epoch"] = self._epoch + 1
             state_dict["best_mAP"] = self._best_mAP
-            state_dict["state_dict"] = self.model.state_dict()
+            state_dict["state_dict"] = self.ema.module.state_dict()
             save_checkpoint(state_dict, is_best,
-                        fpath=osp.join(fpath, "checkpoint.pth"))
+                            fpath=osp.join(fpath, "checkpoint.pth"))
 
         else:
             assert "Unknown type of model for save_model()"

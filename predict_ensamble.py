@@ -1,7 +1,7 @@
 """
 #source command line
---resume ./logs/resnet101_256/checkpoint.pth ./logs/swin_base_gemm_flip_blur/checkpoint.pth ./logs/swin_large_gemm_flip_blur/checkpoint.pth
---config ./logs/resnet101_256/config.yaml ./logs/swin_base_gemm_flip_blur/config.yaml ./logs/swin_large_gemm_flip_blur/config.yaml
+--resume ./logs/resnet_101_ema/checkpoint.pth ./logs/swin_base_ema/checkpoint.pth ./logs/swin_large_ema/checkpoint.pth
+--config ./logs/resnet_101_ema/config.yaml ./logs/swin_base_ema/config.yaml ./logs/swin_large_ema/config.yaml
 #pseudo command line
 --resume ./logs/resnet_pseudo_matrix_v2/checkpoint.pth ./logs/swin_base_pseudo_matrix_v2/checkpoint.pth ./logs/swin_large_pseudo_matrix_v2/checkpoint.pth
 --config ./logs/resnet_pseudo_matrix_v2/config.yaml ./logs/swin_base_pseudo_matrix_v2/config.yaml ./logs/swin_large_pseudo_matrix_v2/config.yaml
