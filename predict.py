@@ -61,9 +61,9 @@ def extract():
     reid_model.cuda()
     reid_model.eval()
     test_transform = build_transform(cfg.DATA['height'])
-    test_dataset = TestData('../data/pet_biometric_challenge_2022/validation/images',
-                            '../data/pet_biometric_challenge_2022/validation/valid_data.csv',
-                            test_transform, 'validation_bad_list.txt')
+    test_dataset = TestData('../data/pet_biometric_challenge_2022/test/test',
+                            '../data/pet_biometric_challenge_2022/test/test_data.csv',
+                            test_transform, 'test_bad_list.txt')
     test_loader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False, num_workers=8)
 
     with torch.no_grad():

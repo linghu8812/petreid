@@ -5,6 +5,10 @@ import copy
 import os.path as osp
 import tarfile
 import zipfile
+from albumentations import Compose, OneOf, Blur, Downscale, GaussNoise, ISONoise, MotionBlur, ImageCompression, \
+    JpegCompression, MedianBlur, MultiplicativeNoise
+import numpy as np
+from PIL import Image
 
 from ...utils import bcolors
 from ...utils.dist_utils import get_dist_info, synchronize
@@ -165,6 +169,17 @@ class ImageDataset(Dataset):
 
         if pseudo_labels is not None:
             self.renew_labels(pseudo_labels)
+        if mode == 'trainval':
+            self.preprocess = Compose([
+                OneOf([Blur(p=0.5, blur_limit=25), MotionBlur(blur_limit=25, p=0.5), MedianBlur(blur_limit=25, p=0.5)],
+                      p=1.0),
+                OneOf([GaussNoise(p=0.5), ISONoise(p=0.5), MultiplicativeNoise(p=0.5, multiplier=(0.75, 1.5))], p=1.0),
+                OneOf([Downscale(p=0.5, scale_min=0.25, scale_max=0.75),
+                       ImageCompression(p=0.5, quality_lower=25, quality_upper=50),
+                       JpegCompression(p=0.5, quality_lower=25, quality_upper=50)], p=1.0),
+            ])
+        else:
+            self.preprocess = None
 
     def __getitem__(self, indices):
         if isinstance(indices, (tuple, list)):
@@ -174,6 +189,8 @@ class ImageDataset(Dataset):
     def _get_single_item(self, index):
         img_path, pid, camid = self.data[index]
         img = read_image(img_path)
+        if self.preprocess is not None:
+            img = Image.fromarray(self.preprocess(image=np.array(img))['image'])
         if self.transform is not None:
             img = self.transform(img)
 

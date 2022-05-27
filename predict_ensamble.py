@@ -1,7 +1,9 @@
 """
 #source command line
---resume ./logs/resnet_101_ema/checkpoint.pth ./logs/swin_base_ema/checkpoint.pth ./logs/swin_large_ema/checkpoint.pth
---config ./logs/resnet_101_ema/config.yaml ./logs/swin_base_ema/config.yaml ./logs/swin_large_ema/config.yaml
+--resume ./logs/resnet_attack/checkpoint.pth ./logs/swin_base_attack/checkpoint.pth ./logs/swin_large_attack/checkpoint.pth
+--config ./logs/resnet_attack/config.yaml ./logs/swin_base_attack/config.yaml ./logs/swin_large_attack/config.yaml
+--resume ./logs/swin_base_attack/checkpoint.pth ./logs/swin_large_attack/checkpoint.pth
+--config ./logs/swin_base_attack/config.yaml ./logs/swin_large_attack/config.yaml
 #pseudo command line
 --resume ./logs/resnet_pseudo_ema/checkpoint.pth ./logs/swin_base_pseudo_ema/checkpoint.pth ./logs/swin_large_pseudo_ema/checkpoint.pth
 --config ./logs/resnet_pseudo_ema/config.yaml ./logs/swin_base_pseudo_ema/config.yaml ./logs/swin_large_pseudo_ema/config.yaml
@@ -95,9 +97,9 @@ def extract():
             results_dist = 0
             for model, config in zip(model_list, config_list):
                 test_transform = build_transform(config['DATA']['height'])
-                test_dataset = TestData('../data/pet_biometric_challenge_2022/validation/images',
-                                        '../data/pet_biometric_challenge_2022/validation/valid_data.csv',
-                                        test_transform, 'validation_bad_list.txt')
+                test_dataset = TestData('../data/pet_biometric_challenge_2022/test/test',
+                                        '../data/pet_biometric_challenge_2022/test/test_data.csv',
+                                        test_transform)
                 test_loader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False, num_workers=8)
                 model_reuslt, names_1, names_2 = compute_result(model, test_loader, config, flip=True)
                 results_dist = results_dist + model_reuslt
