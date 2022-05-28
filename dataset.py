@@ -16,11 +16,12 @@ def build_transform(img_size):
     return transform
 
 
-# test_transform = transforms.Compose([
-#     transforms.Resize((224, 224)),
-#     transforms.ToTensor(),
-#     transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
-# ])
+def read_image(path, name):
+    src_img = Image.open(os.path.join(path, name))
+    img = np.zeros((max(src_img.size), max(src_img.size), 3)).astype(np.uint8)
+    img[:src_img.size[1], :src_img.size[0], :] = np.array(src_img)
+    src_img = Image.fromarray(img)
+    return src_img
 
 
 class TestData(Dataset):
@@ -39,11 +40,11 @@ class TestData(Dataset):
 
     def __getitem__(self, item):
         image_name1, image_name2 = self.dataset[item][0], self.dataset[item][1]
-        src_img1 = Image.open(os.path.join(self.data_path, self.dataset[item][0]))
+        src_img1 = read_image(self.data_path, self.dataset[item][0])
         if image_name1 in self.bad_data_list:
             rotate_time = self.bad_data_list[image_name1]
             src_img1 = Image.fromarray(np.rot90(np.asarray(src_img1), rotate_time, axes=(1, 0)))
-        src_img2 = Image.open(os.path.join(self.data_path, self.dataset[item][1]))
+        src_img2 = read_image(self.data_path, self.dataset[item][1])
         if image_name2 in self.bad_data_list:
             rotate_time = self.bad_data_list[image_name2]
             src_img2 = Image.fromarray(np.rot90(np.asarray(src_img2), rotate_time, axes=(1, 0)))

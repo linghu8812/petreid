@@ -6,7 +6,7 @@ import os.path as osp
 import tarfile
 import zipfile
 from albumentations import Compose, OneOf, Blur, Downscale, GaussNoise, ISONoise, MotionBlur, ImageCompression, \
-    JpegCompression, MedianBlur, MultiplicativeNoise
+    JpegCompression, MedianBlur, MultiplicativeNoise, Resize, CoarseDropout
 import numpy as np
 from PIL import Image
 
@@ -177,6 +177,8 @@ class ImageDataset(Dataset):
                 OneOf([Downscale(p=0.5, scale_min=0.25, scale_max=0.75),
                        ImageCompression(p=0.5, quality_lower=25, quality_upper=50),
                        JpegCompression(p=0.5, quality_lower=25, quality_upper=50)], p=1.0),
+                Resize(256, 256),
+                CoarseDropout(max_holes=1, max_height=160, max_width=160, min_height=80, min_width=80, p=0.5),
             ])
         else:
             self.preprocess = None

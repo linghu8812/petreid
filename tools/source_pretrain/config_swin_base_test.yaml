@@ -59,7 +59,7 @@ TRAIN:
   datasets: {'market1501': ['trainval']}
   unsup_dataset_indexes: null
 
-  epochs: 22
+  epochs: 30
   iters: 625
 
   LOSS:
@@ -91,7 +91,7 @@ TRAIN:
 
   SCHEDULER:
     lr_scheduler: 'cosine'
-    max_epoch: 22
+    max_epoch: 30
     warmup_factor: 0.01
     warmup_steps: 10
 
