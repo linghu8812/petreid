@@ -9,7 +9,7 @@ six
 scipy
 opencv-python
 matplotlib
-faiss-gpu==1.6.3
+faiss-gpu
 easydict
 pyyaml
 requests
