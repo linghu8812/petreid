@@ -78,10 +78,10 @@ def extract():
                 names_1.extend(list(names1))
                 names_2.extend(list(names2))
             similarities = torch.mm(torch.cat(features_1), torch.cat(features_2).t())
-            jaccard_dist = 1 - build_dist(cfg.TEST, torch.cat(features_1), torch.cat(features_2), dist_m="jaccard")
-            results_dist = np.diagonal(0.7 * similarities + 0.3 * jaccard_dist)
-            for image_name1, image_name2, result in zip(names_1, names_2, results_dist):
-                f.write(f'{image_name1},{image_name2},{1 - result}\n')
+            # jaccard_dist = 1 - build_dist(cfg.TEST, torch.cat(features_1), torch.cat(features_2), dist_m="jaccard")
+            # results_dist = np.diagonal(0.7 * similarities + 0.3 * jaccard_dist)
+            for image_name1, image_name2, result in zip(names_1, names_2, np.diagonal(similarities)):
+                f.write(f'{image_name1},{image_name2},{result}\n')
 
     print('Extraction Done')
 

@@ -1,6 +1,7 @@
 import os.path as osp
 
 from PIL import Image
+import numpy as np
 
 
 def read_image(path):
@@ -22,7 +23,11 @@ def read_image(path):
                 f'IOError incurred when reading "{path}". '
                 f"Will redo. Don't worry. Just chill."
             )
+    src_img = np.zeros((max(img.size), max(img.size), 3)).astype(np.uint8)
+    src_img[:img.size[1], :img.size[0], :] = np.array(img)
+    img = Image.fromarray(src_img)
     return img
+
 
 def save_image(image_numpy, path, aspect_ratio=1.0):
     """Save a numpy image to the disk

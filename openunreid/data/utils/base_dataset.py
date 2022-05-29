@@ -178,7 +178,7 @@ class ImageDataset(Dataset):
                        ImageCompression(p=0.5, quality_lower=25, quality_upper=50),
                        JpegCompression(p=0.5, quality_lower=25, quality_upper=50)], p=1.0),
                 Resize(256, 256),
-                CoarseDropout(max_holes=1, max_height=160, max_width=160, min_height=80, min_width=80, p=0.5),
+                CoarseDropout(max_holes=1, max_height=128, max_width=128, min_height=80, min_width=80, p=0.5),
             ])
         else:
             self.preprocess = None

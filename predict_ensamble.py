@@ -1,7 +1,7 @@
 """
 #source command line
---resume ./logs/resnet_attack/checkpoint.pth ./logs/swin_base_attack/checkpoint.pth ./logs/swin_large_attack/checkpoint.pth
---config ./logs/resnet_attack/config.yaml ./logs/swin_base_attack/config.yaml ./logs/swin_large_attack/config.yaml
+--resume ./logs/swin_base_attack_resize/checkpoint.pth ./logs/swin_large_attack_resize/checkpoint.pth
+--config ./logs/swin_base_attack_resize/config.yaml ./logs/swin_large_attack_resize/config.yaml
 --resume ./logs/swin_base_attack/checkpoint.pth ./logs/swin_large_attack/checkpoint.pth
 --config ./logs/swin_base_attack/config.yaml ./logs/swin_large_attack/config.yaml
 #pseudo command line
@@ -59,10 +59,10 @@ def model_inference(model, test_loader, flip=False):
 
 
 def compute_dist(model_config, features1, features2):
-    similarities = np.diagonal(torch.mm(torch.cat(features1), torch.cat(features2).t()))
-    # jaccard_dist = 1 - build_dist(model_config['TEST'], torch.cat(features1), torch.cat(features2), dist_m="jaccard")
-    # results_dist = np.diagonal(0.7 * similarities + 0.3 * jaccard_dist)
-    return similarities
+    similarities = torch.mm(torch.cat(features1), torch.cat(features2).t())
+    jaccard_dist = 1 - build_dist(model_config['TEST'], torch.cat(features1), torch.cat(features2), dist_m="jaccard")
+    results_dist = np.diagonal(0.7 * similarities + 0.3 * jaccard_dist)
+    return results_dist
 
 
 def compute_result(model, test_loader, model_config, flip=False):
