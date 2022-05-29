@@ -101,7 +101,7 @@ def extract():
                                         '../data/pet_biometric_challenge_2022/test/test_data.csv',
                                         test_transform)
                 test_loader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False, num_workers=8)
-                model_reuslt, names_1, names_2 = compute_result(model, test_loader, config, flip=True)
+                model_reuslt, names_1, names_2 = compute_result(model, test_loader, config, flip=False)
                 results_dist = results_dist + model_reuslt
 
             results_dist /= len(model_list)
