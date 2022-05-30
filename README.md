@@ -1,95 +1,63 @@
-<img src="docs/open_mmlab.png" align="right" width="30%">
+# 天池CVPR2022 Biometrics Workshop Pet Biometric Challenge解题思路
 
-# OpenUnReID
+## 复现方法
 
-## Introduction
-`OpenUnReID` is an open-source PyTorch-based codebase for both unsupervised learning (**USL**) and unsupervised domain adaptation (**UDA**) in the context of object re-ID tasks. It provides strong baselines and multiple state-of-the-art methods with highly refactored codes for both *pseudo-label-based* and *domain-translation-based* frameworks. It works with **Python >=3.5** and **PyTorch >=1.1**.
+### 复现准备
 
-We are actively updating this repo, and more methods will be supported soon. Contributions are welcome.
-
-<p align="center">
-    <img src="docs/openunreid.png" width="60%">
-</p>
-
-### Major features
-- [x] Distributed training & testing with multiple GPUs and multiple machines.
-- [x] High flexibility on various combinations of datasets, backbones, losses, etc.
-- [x] GPU-based pseudo-label generation and k-reciprocal re-ranking with quite high speed.
-- [x] Plug-and-play domain-specific BatchNorms for any backbones, sync BN is also supported.
-- [x] Mixed precision training is supported, achieving higher efficiency.
-- [x] A strong cluster baseline, providing high extensibility on designing new methods.
-- [x] State-of-the-art methods and performances for both USL and UDA problems on object re-ID.
-
-### Supported methods
-
-Please refer to [MODEL_ZOO.md](docs/MODEL_ZOO.md) for trained models and download links, and please refer to [LEADERBOARD.md](docs/LEADERBOARD.md) for the leaderboard on public benchmarks.
-
-| Method | Reference | USL | UDA |
-| ------ | :---: | :-----: | :-----: |
-| [UDA_TP](tools/UDA_TP) | [PR'20 (arXiv'18)](https://arxiv.org/abs/1807.11334) | ✓ | ✓ |
-| [SPGAN](tools/SPGAN)  | [CVPR'18](https://arxiv.org/abs/1711.07027) | n/a  |  ✓ |  
-| SSG | [ICCV'19](https://arxiv.org/abs/1811.10144) | ongoing  | ongoing  |  
-| [strong_baseline](tools/strong_baseline) | Sec. 3.1 in [ICLR'20](https://openreview.net/pdf?id=rJlnOhVYPS) | ✓ | ✓ |
-| [MMT](tools/MMT/) | [ICLR'20](https://openreview.net/pdf?id=rJlnOhVYPS) | ✓  | ✓  |  
-| [SpCL](tools/SpCL/) | [NeurIPS'20](https://arxiv.org/abs/2006.02713) | ✓ |  ✓  |  
-| SDA  | [arXiv'20](https://arxiv.org/abs/2003.06650) | n/a  |  ongoing |  
-
-
-## Updates
-
-[2020-08-02] Add the leaderboard on public benchmarks: [LEADERBOARD.md](docs/LEADERBOARD.md)
-
-[2020-07-30] `OpenUnReID` v0.1.1 is released:
-+ Support domain-translation-based frameworks, [CycleGAN](tools/CycleGAN) and [SPGAN](tools/SPGAN).
-+ Support mixed precision training (`torch.cuda.amp` in PyTorch>=1.6), use it by adding `TRAIN.amp True` at the end of training commands.
-
-[2020-07-01] `OpenUnReID` v0.1.0 is released.
-
-## Installation
-
-Please refer to [INSTALL.md](docs/INSTALL.md) for installation and dataset preparation.
-
-## Get Started
-
-Please refer to [GETTING_STARTED.md](docs/GETTING_STARTED.md) for the basic usage of `OpenUnReID`.
-
-## License
-
-`OpenUnReID` is released under the [Apache 2.0 license](LICENSE).
-
-## Citation
-
-If you use this toolbox or models in your research, please consider cite:
+下载代码
 ```
-@inproceedings{ge2020mutual,
-  title={Mutual Mean-Teaching: Pseudo Label Refinery for Unsupervised Domain Adaptation on Person Re-identification},
-  author={Yixiao Ge and Dapeng Chen and Hongsheng Li},
-  booktitle={International Conference on Learning Representations},
-  year={2020},
-  url={https://openreview.net/forum?id=rJlnOhVYPS}
-}
-
-@inproceedings{ge2020selfpaced,
-    title={Self-paced Contrastive Learning with Hybrid Memory for Domain Adaptive Object Re-ID},
-    author={Yixiao Ge and Feng Zhu and Dapeng Chen and Rui Zhao and Hongsheng Li},
-    booktitle={Advances in Neural Information Processing Systems},
-    year={2020}
-}
+git clone git@github.com:linghu8812/petreid.git
 ```
-<!-- @misc{ge2020structured,
-    title={Structured Domain Adaptation with Online Relation Regularization for Unsupervised Person Re-ID},
-    author={Yixiao Ge and Feng Zhu and Rui Zhao and Hongsheng Li},
-    year={2020},
-    eprint={2003.06650},
-    archivePrefix={arXiv},
-    primaryClass={cs.CV}
-} -->
+将比赛数据`pet_biometric_challenge_2022.zip`和`test.zip`放到与petreid平行级的data文件夹中
 
 
-## Acknowledgement
+### 构建镜像
 
-Some parts of `openunreid` are learned from [torchreid](https://github.com/KaiyangZhou/deep-person-reid) and [fastreid](https://github.com/JDAI-CV/fast-reid). We would like to thank for their projects, which have boosted the research of supervised re-ID a lot. We hope that `OpenUnReID` could well benefit the research community of unsupervised re-ID by providing strong baselines and state-of-the-art methods.
+如果没有可运行的环境，可以基于以下命令行构建运行镜像
+```
+docker build -t pet_biometric:0.1.0 .
+```
 
-## Contact
+### 训练测试复现
 
-This project is developed by Yixiao Ge ([@yxgeee](https://github.com/yxgeee)), Tong Xiao ([@Cysu](https://github.com/Cysu)), Zhiwei Zhang ([@zwzhang121](https://github.com/zwzhang121)).
+基于镜像，可以运行以下命令，其中`${PWD}`为petreid上级目录，非petreid本级目录。
+```
+docker run -it --rm --gpus all --privileged --ipc=host -v ${PWD}:/home/pet_biometric pet_biometric:0.1.0 sh train.sh
+```
+也可直接运行脚本文件
+```
+sh train.sh
+```
+预测的脚本文件为：
+```
+sh predict.sh
+```
+
+## 方案概述
+
+采用ReID的思路，因为训练集中每一类的样本较少，故选择了少样本学习MOCO和多损失函数学习联合监督的方案。
+
+###  骨干网络选择
+
+选择了swin base 224和swin large 224进行特征提取，预训练模型下载链接为：
+[https://github.com/SwinTransformer/storage/releases/download/v1.0.0/swin_large_patch4_window7_224_22k.pth](https://github.com/SwinTransformer/storage/releases/download/v1.0.0/swin_large_patch4_window7_224_22k.pth)， [https://github.com/SwinTransformer/storage/releases/download/v1.0.0/swin_base_patch4_window7_224_22kto1k.pth](https://github.com/SwinTransformer/storage/releases/download/v1.0.0/swin_base_patch4_window7_224_22kto1k.pth)。
+
+###  池化层
+
+在池化层方面，使用了Generalized Mean Pooling替换了平均池化层，以提高重识别的精度
+
+###  损失函数
+
+基于pair wise的MoCo loss和CosFace loss对训练进行联合监督
+
+###  训练策略
+
+(1) 使用全部数据进行训练；(2) 使用余弦学习率衰减；(3) 使用图像模糊；(4) 使用图像翻转
+
+###  测试集优化
+
+针对测试集，使用了对抗攻击的思路提高测试集得分，使用的攻击策略有：(1) 随机选择Blur，MotionBlur，MedianBlur进行图像模糊；(2) 随机选择GaussNoise，ISONoise，MultiplicativeNoise对图像添加噪声；(3) 随机选择Downscale，ImageCompression，JpegCompression对图像压缩，降低图像质量；(4) 随机遮挡图像的一半数据
+
+###  数据测试
+
+(1) 在输入图像时，首先按照图像的长边进行Resize到224长度，然后将短边Pad填充0补齐到224；(2) 在提取完所有图片特征后，计算所有特征的jetcard距离并与余弦距离加权计算，输出最终的相似度结果。

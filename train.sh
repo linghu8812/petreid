@@ -1,6 +1,6 @@
 # process data
-pip install -r requirements.txt
-python setup.py develop
+# pip install -r requirements.txt
+# python setup.py develop
 cd ../data
 unzip pet_biometric_challenge_2022.zip
 unzip test.zip

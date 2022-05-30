@@ -1,10 +1,12 @@
+torch==1.7.0
+torchvision==0.8.1
 numpy
 sklearn
 Cython
 h5py
 pyzmq
 tornado
-pillow-simd
+Pillow
 six
 scipy
 opencv-python
@@ -14,3 +16,8 @@ easydict
 pyyaml
 requests
 multiprocess
+tqdm
+timm
+albumentations
+efficientnet_pytorch
+pandas
