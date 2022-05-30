@@ -8,8 +8,9 @@
 ```
 git clone git@github.com:linghu8812/petreid.git
 ```
-将比赛数据`pet_biometric_challenge_2022.zip`和`test.zip`放到与petreid平行级的data文件夹中
+将比赛数据`pet_biometric_challenge_2022.zip`和`test.zip`放到与petreid平行级的data文件夹中。
 
+可以复现B榜结果的权重从这里下载：链接：[https://pan.baidu.com/s/1t6vQ_HCPnqOx0mik0xkn2Q](https://pan.baidu.com/s/1t6vQ_HCPnqOx0mik0xkn2Q)，密码: wtfl，下载后的权重放在petreid目录下的`logs`文件夹中。运行以下命令可以输出结果文件，结果文件为`result.csv`
 
 ### 构建镜像
 
@@ -35,7 +36,7 @@ sh predict.sh
 
 ## 方案概述
 
-采用ReID的思路，因为训练集中每一类的样本较少，故选择了少样本学习MOCO和多损失函数学习联合监督的方案。
+项目采用ReID的思路，基于[OpenUnReID](https://github.com/open-mmlab/OpenUnReID)，因为训练集中每一类的样本较少，故选择了少样本学习MOCO和多损失函数学习联合监督的方案，其中MoCo和CosFace的实现基于[fast-reid](https://github.com/JDAI-CV/fast-reid)中的实现，特征提取网络采用了[timm](https://github.com/rwightman/pytorch-image-models)中实现的[Swin Transformer](https://github.com/microsoft/Swin-Transformer)，对于A榜和B榜的gap，采用了[albumentations](https://albumentations.ai/)进行模糊和噪声等的Adversarial Augmentation。在此也对各个开源作者表示感谢。
 
 ###  骨干网络选择
 
