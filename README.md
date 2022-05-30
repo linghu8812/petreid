@@ -14,7 +14,7 @@ git clone git@github.com:linghu8812/petreid.git
 
 ### 构建镜像
 
-如果没有可运行的环境，可以基于以下命令行构建运行镜像
+如果没有可运行的环境，可以基于以下命令行构建运行镜像，阿里云上的镜像地址为：[registry.cn-hangzhou.aliyuncs.com/tianchi_linghu8812/pet_biometric:0.1.0](registry.cn-hangzhou.aliyuncs.com/tianchi_linghu8812/pet_biometric:0.1.0)。
 ```
 docker build -t pet_biometric:0.1.0 .
 ```
